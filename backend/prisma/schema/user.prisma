@@ -1,0 +1,19 @@
+model User {
+  id            String    @id @default(uuid())
+  fullName      String    @db.VarChar(50)
+  phone         String    @unique @db.VarChar(15)
+  password      String    @db.VarChar(255)
+  role          UserRole  @default(MEMBER)
+  profileImage  String?   @db.VarChar(500)
+  expoPushToken String?   @db.VarChar(255)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  managedMesses Mess[]    @relation("MessManager")
+  memberships   MessMember[]
+  meals         Meal[]
+  bazarEntries  Bazar[]   @relation("BazarAddedBy")
+  bills         Bill[]
+  payments      Payment[]
+  notifications Notification[]
+  @@map("users")
+}

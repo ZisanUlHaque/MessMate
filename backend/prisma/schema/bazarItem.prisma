@@ -1,0 +1,12 @@
+model BazarItem {
+  id         String  @id @default(uuid())
+  bazarId    String
+  itemName   String  @db.VarChar(100)
+  quantity   Decimal @db.Decimal(8,2)
+  unit       String  @db.VarChar(20)
+  unitPrice  Decimal @db.Decimal(10,2)
+  totalPrice Decimal @db.Decimal(10,2)
+  bazar      Bazar   @relation(fields: [bazarId], references: [id], onDelete: Cascade)
+  @@index([bazarId])
+  @@map("bazar_items")
+}

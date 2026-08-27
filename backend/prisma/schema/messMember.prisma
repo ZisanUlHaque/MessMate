@@ -1,0 +1,14 @@
+model MessMember {
+  id        String       @id @default(uuid())
+  messId    String
+  userId    String
+  role      UserRole     @default(MEMBER)
+  status    MemberStatus @default(PENDING)
+  joinedAt  DateTime     @default(now())
+  mess      Mess         @relation(fields: [messId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([messId, userId])
+  @@index([messId])
+  @@index([userId])
+  @@map("mess_members")
+}

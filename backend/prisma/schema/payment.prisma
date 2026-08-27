@@ -1,0 +1,13 @@
+model Payment {
+  id      String        @id @default(uuid())
+  billId  String
+  userId  String
+  amount  Decimal       @db.Decimal(10,2)
+  method  PaymentMethod @default(CASH)
+  note    String?       @db.VarChar(200)
+  paidAt  DateTime      @default(now())
+  bill    Bill          @relation(fields: [billId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id])
+  @@index([billId])
+  @@map("payments")
+}

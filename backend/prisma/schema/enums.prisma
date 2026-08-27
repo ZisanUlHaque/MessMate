@@ -1,0 +1,36 @@
+enum UserRole {
+  MANAGER
+  MEMBER
+}
+
+enum MemberStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BazarCategory {
+  GROCERY
+  GAS
+  UTILITY
+  OTHER
+}
+
+enum BillStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum PaymentMethod {
+  CASH
+  BKASH
+  BANK
+}
+
+enum NotificationType {
+  REMINDER
+  BILL
+  APPROVAL
+  ALERT
+}
