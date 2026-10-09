@@ -4,6 +4,7 @@ import * as ctrl from "./auth.controller";
 import * as val from "./auth.validation";
 import { validate } from "../../middleware/validate.middleware";
 import { protect } from "../../middleware/auth.middleware";
+
 const router = Router();
 router.post("/register", validate(val.registerSchema), ctrl.register);
 router.post("/login", validate(val.loginSchema), ctrl.login);

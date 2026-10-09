@@ -12,15 +12,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormValues } from "@/lib/validators";
+import { registerSchema, RegisterFormValues } from "@/lib/validators";
 import { useAuthStore } from "@/stores/authStore";
 import { useUIStore } from "@/stores/uiStore";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { COLORS, FONT_SIZE } from "@/lib/constants";
 
-export default function LoginScreen() {
-  const login = useAuthStore((state) => state.login);
+export default function RegisterScreen() {
+  const register = useAuthStore((state) => state.register);
   const showSnackbar = useUIStore((state) => state.showSnackbar);
   const [loading, setLoading] = useState(false);
 
@@ -28,22 +28,24 @@ export default function LoginScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      fullName: "",
       phone: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
       setLoading(true);
-      await login(data.phone, data.password);
-      showSnackbar("Logged in successfully!", "success");
+      await register(data.fullName, data.phone, data.password);
+      showSnackbar("Account created successfully!", "success");
       router.replace("/(tabs)/home");
     } catch (err: any) {
-      showSnackbar(err?.message || "Failed to log in", "error");
+      showSnackbar(err?.message || "Registration failed", "error");
     } finally {
       setLoading(false);
     }
@@ -60,12 +62,27 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Text style={styles.logoEmoji}>🍽️</Text>
-            <Text style={styles.title}>MessMate</Text>
-            <Text style={styles.subtitle}>Welcome back! Please login.</Text>
+            <Text style={styles.logoEmoji}>🏠</Text>
+            <Text style={styles.title}>Join MessMate</Text>
+            <Text style={styles.subtitle}>Create your bachelor mess account</Text>
           </View>
 
           <View style={styles.form}>
+            <Controller
+              control={control}
+              name="fullName"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  label="Full Name"
+                  placeholder="e.g. Rahim Khan"
+                  value={value}
+                  onChangeText={onChange}
+                  icon="account-outline"
+                  error={errors.fullName?.message}
+                />
+              )}
+            />
+
             <Controller
               control={control}
               name="phone"
@@ -89,7 +106,7 @@ export default function LoginScreen() {
               render={({ field: { onChange, value } }) => (
                 <Input
                   label="Password"
-                  placeholder="••••••"
+                  placeholder="Minimum 6 characters"
                   secureTextEntry
                   value={value}
                   onChangeText={onChange}
@@ -99,8 +116,24 @@ export default function LoginScreen() {
               )}
             />
 
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  label="Confirm Password"
+                  placeholder="Re-enter password"
+                  secureTextEntry
+                  value={value}
+                  onChangeText={onChange}
+                  icon="lock-check-outline"
+                  error={errors.confirmPassword?.message}
+                />
+              )}
+            />
+
             <Button
-              title="Login"
+              title="Register"
               onPress={handleSubmit(onSubmit)}
               loading={loading}
               fullWidth
@@ -108,9 +141,9 @@ export default function LoginScreen() {
             />
 
             <View style={styles.footerRow}>
-              <Text style={styles.footerText}>Don't have an account? </Text>
-              <Pressable onPress={() => router.push("/(auth)/register")}>
-                <Text style={styles.registerLink}>Register</Text>
+              <Text style={styles.footerText}>Already have an account? </Text>
+              <Pressable onPress={() => router.push("/(auth)/login")}>
+                <Text style={styles.loginLink}>Login</Text>
               </Pressable>
             </View>
           </View>
@@ -136,22 +169,21 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 24,
   },
   logoEmoji: {
-    fontSize: 54,
+    fontSize: 48,
     marginBottom: 8,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "800",
     color: COLORS.text,
-    letterSpacing: 0.5,
   },
   subtitle: {
     fontSize: FONT_SIZE.md,
     color: COLORS.textSecondary,
-    marginTop: 6,
+    marginTop: 4,
   },
   form: {
     backgroundColor: COLORS.card,
@@ -176,7 +208,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     color: COLORS.textSecondary,
   },
-  registerLink: {
+  loginLink: {
     fontSize: FONT_SIZE.sm,
     fontWeight: "700",
     color: COLORS.primary,
