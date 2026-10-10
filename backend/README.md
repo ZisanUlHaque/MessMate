@@ -5,6 +5,7 @@ MessMate is a full-stack backend service built for shared bachelor messes in Sou
 
 ---
 
+
 ## 🛠️ Tech Stack
 
 * **Runtime:** Node.js + Express.js (TypeScript)
